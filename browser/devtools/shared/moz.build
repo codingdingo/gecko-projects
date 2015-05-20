@@ -41,6 +41,7 @@ EXTRA_JS_MODULES.devtools.shared.profiler += [
 EXTRA_JS_MODULES.devtools.shared.timeline += [
     'timeline/global.js',
     'timeline/marker-details.js',
+    'timeline/marker-utils.js',
     'timeline/markers-overview.js',
     'timeline/waterfall.js',
 ]
@@ -60,9 +61,7 @@ EXTRA_JS_MODULES.devtools.shared += [
     'telemetry.js',
     'theme-switching.js',
     'theme.js',
-    'undo.js',
-    'worker-helper.js',
-    'worker.js',
+    'undo.js'
 ]
 
 EXTRA_JS_MODULES.devtools.shared.widgets += [

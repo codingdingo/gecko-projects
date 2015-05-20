@@ -1210,6 +1210,9 @@ pref("security.sandbox.content.level", 1);
 pref("security.sandbox.content.level", 0);
 #endif
 
+// ID (a UUID when set by gecko) that is used as a per profile suffix to a low
+// integrity temp directory.
+pref("security.sandbox.content.tempDirSuffix", "");
 
 #if defined(MOZ_STACKWALKING)
 // This controls the depth of stack trace that is logged when Windows sandbox
@@ -1332,6 +1335,8 @@ pref("services.sync.prefs.sync.xpinstall.whitelist.required", true);
 #ifdef MOZ_DEV_EDITION
 sticky_pref("lightweightThemes.selectedThemeID", "firefox-devedition@mozilla.org");
 sticky_pref("browser.devedition.theme.enabled", true);
+#else
+sticky_pref("lightweightThemes.selectedThemeID", "");
 #endif
 
 // Developer edition promo preferences
@@ -1373,7 +1378,7 @@ pref("devtools.toolbox.splitconsoleHeight", 100);
 
 // Toolbox Button preferences
 pref("devtools.command-button-pick.enabled", true);
-pref("devtools.command-button-frames.enabled", false);
+pref("devtools.command-button-frames.enabled", true);
 pref("devtools.command-button-splitconsole.enabled", true);
 pref("devtools.command-button-paintflashing.enabled", false);
 pref("devtools.command-button-tilt.enabled", false);
@@ -1401,6 +1406,8 @@ pref("devtools.inspector.showUserAgentStyles", false);
 pref("devtools.inspector.showAllAnonymousContent", false);
 // Enable the MDN docs tooltip
 pref("devtools.inspector.mdnDocsTooltip.enabled", true);
+// Show the new animation inspector UI
+pref("devtools.inspector.animationInspectorV3", false);
 
 // DevTools default color unit
 pref("devtools.defaultColorUnit", "hex");
@@ -1447,13 +1454,12 @@ pref("devtools.performance.ui.show-idle-blocks", true);
 pref("devtools.performance.ui.enable-memory", false);
 pref("devtools.performance.ui.enable-framerate", true);
 pref("devtools.performance.ui.show-jit-optimizations", false);
-// If in aurora/dev edition (40.0, will revert for 40.1), set default
-// to retro mode.
-// TODO bug 1160313
-#ifdef MOZ_DEV_EDITION
-  pref("devtools.performance.ui.retro-mode", true);
+
+// Enable experimental options in the UI only in Nightly
+#if defined(NIGHTLY_BUILD)
+pref("devtools.performance.ui.experimental", true);
 #else
-  pref("devtools.performance.ui.retro-mode", false);
+pref("devtools.performance.ui.experimental", false);
 #endif
 
 // The default cache UI setting
@@ -1631,6 +1637,9 @@ pref("browser.newtab.preload", true);
 
 // Remembers if the about:newtab intro has been shown
 pref("browser.newtabpage.introShown", false);
+
+// Remembers if the about:newtab update intro has been shown
+pref("browser.newtabpage.updateIntroShown", false);
 
 // Toggles the content of 'about:newtab'. Shows the grid when enabled.
 pref("browser.newtabpage.enabled", true);
@@ -1907,14 +1916,9 @@ pref("browser.reader.detectedFirstArticle", false);
 // Don't limit how many nodes we care about on desktop:
 pref("reader.parse-node-limit", 0);
 
-// Enable Service workers for desktop on non-release builds
-#ifdef NIGHTLY_BUILD
-pref("dom.serviceWorkers.enabled", true);
-#endif
-
 pref("browser.pocket.enabled", true);
 pref("browser.pocket.api", "api.getpocket.com");
 pref("browser.pocket.site", "getpocket.com");
 pref("browser.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
 pref("browser.pocket.useLocaleList", true);
-pref("browser.pocket.enabledLocales", "en-US de es-ES ja ru");
+pref("browser.pocket.enabledLocales", "en-US de es-ES ja ja-JP-mac ru");

@@ -20,12 +20,8 @@ using namespace android;
 
 namespace mozilla {
 
-#ifdef PR_LOGGING
 extern PRLogModuleInfo* gMediaDecoderLog;
 #define DECODER_LOG(type, msg) PR_LOG(gMediaDecoderLog, type, msg)
-#else
-#define DECODER_LOG(type, msg)
-#endif
 
 MediaOmxCommonDecoder::MediaOmxCommonDecoder()
   : MediaDecoder()
@@ -33,11 +29,9 @@ MediaOmxCommonDecoder::MediaOmxCommonDecoder()
   , mCanOffloadAudio(false)
   , mFallbackToStateMachine(false)
 {
-#ifdef PR_LOGGING
   if (!gMediaDecoderLog) {
     gMediaDecoderLog = PR_NewLogModule("MediaDecoder");
   }
-#endif
 }
 
 MediaOmxCommonDecoder::~MediaOmxCommonDecoder() {}
@@ -53,7 +47,7 @@ bool
 MediaOmxCommonDecoder::CheckDecoderCanOffloadAudio()
 {
   return (mCanOffloadAudio && !mFallbackToStateMachine &&
-          !mOutputStreams.Length() && mPlaybackRate == 1.0);
+          !OutputStreams().Length() && mPlaybackRate == 1.0);
 }
 
 void
@@ -250,7 +244,7 @@ MediaOmxCommonDecoder::CurrentPosition()
   }
 
   ReentrantMonitorAutoEnter mon(GetReentrantMonitor());
-  return mAudioOffloadPlayer->GetMediaTimeSecs();
+  return mAudioOffloadPlayer->GetMediaTimeUs();
 }
 
 void

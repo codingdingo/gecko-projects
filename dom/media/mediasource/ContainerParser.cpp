@@ -16,7 +16,6 @@
 #endif
 #include "SourceBufferResource.h"
 
-#ifdef PR_LOGGING
 extern PRLogModuleInfo* GetMediaSourceLog();
 
 /* Polyfill __func__ on MSVC to pass to the log. */
@@ -27,9 +26,6 @@ extern PRLogModuleInfo* GetMediaSourceLog();
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 #define MSE_DEBUG(name, arg, ...) PR_LOG(GetMediaSourceLog(), PR_LOG_DEBUG, (TOSTRING(name) "(%p:%s)::%s: " arg, this, mType.get(), __func__, ##__VA_ARGS__))
-#else
-#define MSE_DEBUG(...)
-#endif
 
 namespace mozilla {
 
@@ -179,7 +175,7 @@ public:
     if (initSegment || !HasCompleteInitData()) {
       if (mParser.mInitEndOffset > 0) {
         MOZ_ASSERT(mParser.mInitEndOffset <= mResource->GetLength());
-        if (!mInitData->SetLength(mParser.mInitEndOffset)) {
+        if (!mInitData->SetLength(mParser.mInitEndOffset, fallible)) {
           // Super unlikely OOM
           return false;
         }
@@ -310,7 +306,7 @@ public:
       const MediaByteRange& range = mParser->mInitRange;
       uint32_t length = range.mEnd - range.mStart;
       if (length) {
-        if (!mInitData->SetLength(length)) {
+        if (!mInitData->SetLength(length, fallible)) {
           // Super unlikely OOM
           return false;
         }
