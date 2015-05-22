@@ -41,7 +41,7 @@
 #include "nsVideoFrame.h"
 
 static PRLogModuleInfo* gTrackElementLog;
-#define LOG(type, msg) PR_LOG(gTrackElementLog, type, msg)
+#define LOG(type, msg) MOZ_LOG(gTrackElementLog, type, msg)
 
 // Replace the usual NS_IMPL_NS_NEW_HTML_ELEMENT(Track) so
 // we can return an UnknownElement instead when pref'd off.
@@ -121,7 +121,7 @@ bool
 HTMLTrackElement::IsWebVTTEnabled()
 {
   // Our callee does not use its arguments.
-  return HTMLTrackElementBinding::ConstructorEnabled(nullptr, JS::NullPtr());
+  return HTMLTrackElementBinding::ConstructorEnabled(nullptr, nullptr);
 }
 
 TextTrack*

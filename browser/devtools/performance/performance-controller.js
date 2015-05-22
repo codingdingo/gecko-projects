@@ -33,6 +33,8 @@ devtools.lazyRequireGetter(this, "Waterfall",
   "devtools/shared/timeline/waterfall", true);
 devtools.lazyRequireGetter(this, "MarkerDetails",
   "devtools/shared/timeline/marker-details", true);
+devtools.lazyRequireGetter(this, "MarkerUtils",
+  "devtools/shared/timeline/marker-utils");
 devtools.lazyRequireGetter(this, "CallView",
   "devtools/shared/profiler/tree-view", true);
 devtools.lazyRequireGetter(this, "ThreadNode",
@@ -452,6 +454,11 @@ let PerformanceController = {
    * @param {RecordingModel} model
    */
   _onRecordingStateChange: function (state, model) {
+    // If we get a state change for a recording that isn't being tracked in the front,
+    // just ignore it. This can occur when stopping a profile via console that was cleared.
+    if (state !== "recording-starting" && this.getRecordings().indexOf(model) === -1) {
+      return;
+    }
     switch (state) {
       // Fired when a RecordingModel was just created from the front
       case "recording-starting":

@@ -245,7 +245,7 @@ xpc::ErrorReport::LogToConsole()
     if (!gJSDiagnostics)
         gJSDiagnostics = PR_NewLogModule("JSDiagnostics");
     if (gJSDiagnostics) {
-        PR_LOG(gJSDiagnostics,
+        MOZ_LOG(gJSDiagnostics,
                 JSREPORT_IS_WARNING(mFlags) ? PR_LOG_WARNING : PR_LOG_ERROR,
                 ("file %s, line %u\n%s", NS_LossyConvertUTF16toASCII(mFileName).get(),
                  mLineNumber, NS_LossyConvertUTF16toASCII(mErrorMsg).get()));
@@ -1260,7 +1260,7 @@ ReadScriptOrFunction(nsIObjectInputStream* stream, JSContext* cx,
 NS_IMETHODIMP
 nsXPConnect::WriteScript(nsIObjectOutputStream* stream, JSContext* cx, JSScript* script)
 {
-    return WriteScriptOrFunction(stream, cx, script, NullPtr());
+    return WriteScriptOrFunction(stream, cx, script, nullptr);
 }
 
 NS_IMETHODIMP

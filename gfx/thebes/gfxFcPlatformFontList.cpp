@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #include "gfxFcPlatformFontList.h"
 #include "gfxFont.h"
@@ -36,7 +36,7 @@ using namespace mozilla::unicode;
 
 #define PRINTING_FC_PROPERTY "gfx.printing"
 
-#define LOG_FONTLIST(args) PR_LOG(gfxPlatform::GetLog(eGfxLog_fontlist), \
+#define LOG_FONTLIST(args) MOZ_LOG(gfxPlatform::GetLog(eGfxLog_fontlist), \
                                PR_LOG_DEBUG, args)
 #define LOG_FONTLIST_ENABLED() PR_LOG_TEST( \
                                    gfxPlatform::GetLog(eGfxLog_fontlist), \
@@ -489,7 +489,7 @@ PrepareFontOptions(FcPattern* aPattern,
 {
     NS_ASSERTION(aFontOptions, "null font options passed to PrepareFontOptions");
 
-    // xxx - taken from the gfxPangoFonts code, needs to be reviewed
+    // xxx - taken from the gfxFontconfigFonts code, needs to be reviewed
 
     FcBool printing;
     if (FcPatternGetBool(aPattern, PRINTING_FC_PROPERTY, 0, &printing) !=
@@ -722,6 +722,8 @@ static void ApplyGdkScreenFontOptions(FcPattern *aPattern);
 static void
 PreparePattern(FcPattern* aPattern, bool aIsPrinterFont)
 {
+    FcConfigSubstitute(nullptr, aPattern, FcMatchPattern);
+
     // This gets cairo_font_options_t for the Screen.  We should have
     // different font options for printing (no hinting) but we are not told
     // what we are measuring for.

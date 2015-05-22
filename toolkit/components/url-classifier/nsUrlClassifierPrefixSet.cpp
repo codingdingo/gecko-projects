@@ -18,13 +18,13 @@
 #include "mozilla/MemoryReporting.h"
 #include "mozilla/Telemetry.h"
 #include "mozilla/FileUtils.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 using namespace mozilla;
 
 // NSPR_LOG_MODULES=UrlClassifierPrefixSet:5
 static const PRLogModuleInfo *gUrlClassifierPrefixSetLog = nullptr;
-#define LOG(args) PR_LOG(gUrlClassifierPrefixSetLog, PR_LOG_DEBUG, args)
+#define LOG(args) MOZ_LOG(gUrlClassifierPrefixSetLog, PR_LOG_DEBUG, args)
 #define LOG_ENABLED() PR_LOG_TEST(gUrlClassifierPrefixSetLog, PR_LOG_DEBUG)
 
 NS_IMPL_ISUPPORTS(

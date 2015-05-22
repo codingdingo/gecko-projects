@@ -105,8 +105,6 @@
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 #endif
 
-        <!-- If the windowSoftInputMode adjust* flag changes below, the
-             setSoftInputMode call in BrowserSearch#onStop must also be updated. -->
         <activity android:name="@MOZ_ANDROID_BROWSER_INTENT_CLASS@"
                   android:label="@string/moz_app_displayname"
                   android:taskAffinity="@ANDROID_PACKAGE_NAME@.BROWSER"
@@ -254,8 +252,7 @@
         <!-- The main reason for the Tab Queue build flag is to not mess with the VIEW intent filter
              before the rest of the plumbing is in place -->
 
-        <service android:name="org.mozilla.gecko.tabqueue.TabQueueService"
-                 android:taskAffinity="@ANDROID_PACKAGE_NAME@.TABQUEUE" />
+        <service android:name="org.mozilla.gecko.tabqueue.TabQueueService" />
 
         <activity android:name="org.mozilla.gecko.tabqueue.TabQueuePrompt"
                   android:launchMode="singleTop"
@@ -265,6 +262,7 @@
                   android:label="@MOZ_APP_DISPLAYNAME@"
                   android:launchMode="singleTask"
                   android:excludeFromRecents="true"
+                  android:taskAffinity="@ANDROID_PACKAGE_NAME@.TABQUEUE"
                   android:theme="@style/TabQueueActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -288,10 +286,6 @@
             </intent-filter>
         </activity>
 #endif
-
-        <activity android:name="org.mozilla.gecko.StartPane"
-                  android:theme="@style/GeckoStartPane"
-                  android:excludeFromRecents="true"/>
 
         <activity android:name="org.mozilla.gecko.webapp.Dispatcher"
             android:noHistory="true" >

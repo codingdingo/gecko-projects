@@ -18,13 +18,13 @@
 #include "nsAutoPtr.h"
 #include "nsCocoaFeatures.h"
 #include "nsThreadUtils.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "VideoUtils.h"
 #include <algorithm>
 #include "gfxPlatform.h"
 
 PRLogModuleInfo* GetAppleMediaLog();
-#define LOG(...) PR_LOG(GetAppleMediaLog(), PR_LOG_DEBUG, (__VA_ARGS__))
+#define LOG(...) MOZ_LOG(GetAppleMediaLog(), PR_LOG_DEBUG, (__VA_ARGS__))
 //#define LOG_MEDIA_SHA1
 
 namespace mozilla {
@@ -108,11 +108,12 @@ AppleVDADecoder::Input(MediaRawData* aSample)
       aSample->mKeyframe ? " keyframe" : "",
       aSample->mSize);
 
-  mTaskQueue->Dispatch(
+  nsCOMPtr<nsIRunnable> runnable =
       NS_NewRunnableMethodWithArg<nsRefPtr<MediaRawData>>(
           this,
           &AppleVDADecoder::SubmitFrame,
-          nsRefPtr<MediaRawData>(aSample)));
+          nsRefPtr<MediaRawData>(aSample));
+  mTaskQueue->Dispatch(runnable.forget());
   return NS_OK;
 }
 
@@ -457,7 +458,7 @@ CFDictionaryRef
 AppleVDADecoder::CreateOutputConfiguration()
 {
   // Construct IOSurface Properties
-  const void* IOSurfaceKeys[] = { CFSTR("kIOSurfaceIsGlobal") };
+  const void* IOSurfaceKeys[] = { MacIOSurfaceLib::kPropIsGlobal };
   const void* IOSurfaceValues[] = { kCFBooleanTrue };
   static_assert(ArrayLength(IOSurfaceKeys) == ArrayLength(IOSurfaceValues),
                 "Non matching keys/values array size");

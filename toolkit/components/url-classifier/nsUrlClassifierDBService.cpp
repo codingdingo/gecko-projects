@@ -38,7 +38,7 @@
 #include "mozilla/Preferences.h"
 #include "mozilla/TimeStamp.h"
 #include "mozilla/Telemetry.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "prprf.h"
 #include "prnetdb.h"
 #include "Entries.h"
@@ -56,7 +56,7 @@ using namespace mozilla::safebrowsing;
 
 // NSPR_LOG_MODULES=UrlClassifierDbService:5
 PRLogModuleInfo *gUrlClassifierDbServiceLog = nullptr;
-#define LOG(args) PR_LOG(gUrlClassifierDbServiceLog, PR_LOG_DEBUG, args)
+#define LOG(args) MOZ_LOG(gUrlClassifierDbServiceLog, PR_LOG_DEBUG, args)
 #define LOG_ENABLED() PR_LOG_TEST(gUrlClassifierDbServiceLog, PR_LOG_DEBUG)
 
 // Prefs for implementing nsIURIClassifier to block page loads

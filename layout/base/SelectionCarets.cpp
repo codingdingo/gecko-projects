@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "SelectionCarets.h"
 
 #include "gfxPrefs.h"
@@ -45,12 +45,12 @@ static const char* kSelectionCaretsLogModuleName = "SelectionCarets";
 // To enable all the SELECTIONCARETS_LOG print statements, set the environment
 // variable NSPR_LOG_MODULES=SelectionCarets:5
 #define SELECTIONCARETS_LOG(message, ...)                                      \
-  PR_LOG(gSelectionCaretsLog, PR_LOG_DEBUG,                                    \
+  MOZ_LOG(gSelectionCaretsLog, PR_LOG_DEBUG,                                    \
          ("SelectionCarets (%p): %s:%d : " message "\n", this, __FUNCTION__,   \
           __LINE__, ##__VA_ARGS__));
 
 #define SELECTIONCARETS_LOG_STATIC(message, ...)                               \
-  PR_LOG(gSelectionCaretsLog, PR_LOG_DEBUG,                                    \
+  MOZ_LOG(gSelectionCaretsLog, PR_LOG_DEBUG,                                    \
          ("SelectionCarets: %s:%d : " message "\n", __FUNCTION__, __LINE__,    \
           ##__VA_ARGS__));
 

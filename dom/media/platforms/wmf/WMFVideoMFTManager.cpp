@@ -15,14 +15,14 @@
 #include "Layers.h"
 #include "mozilla/layers/LayersTypes.h"
 #include "MediaInfo.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "gfx2DGlue.h"
 #include "gfxWindowsPlatform.h"
 #include "IMFYCbCrImage.h"
 #include "mozilla/WindowsVersion.h"
 
 PRLogModuleInfo* GetDemuxerLog();
-#define LOG(...) PR_LOG(GetDemuxerLog(), PR_LOG_DEBUG, (__VA_ARGS__))
+#define LOG(...) MOZ_LOG(GetDemuxerLog(), PR_LOG_DEBUG, (__VA_ARGS__))
 
 using mozilla::layers::Image;
 using mozilla::layers::IMFYCbCrImage;
@@ -482,7 +482,6 @@ WMFVideoMFTManager::Output(int64_t aStreamOffset,
   RefPtr<IMFSample> sample;
   HRESULT hr;
   aOutData = nullptr;
-  bool alreadyDidTypeChange = false;
 
   // Loop until we decode a sample, or an unexpected error that we can't
   // handle occurs.
@@ -498,9 +497,7 @@ WMFVideoMFTManager::Output(int64_t aStreamOffset,
       MOZ_ASSERT(!sample);
       hr = ConfigureVideoFrameGeometry();
       NS_ENSURE_TRUE(SUCCEEDED(hr), hr);
-      NS_ENSURE_FALSE(alreadyDidTypeChange, MF_E_TRANSFORM_STREAM_CHANGE);
       // Loop back and try decoding again...
-      alreadyDidTypeChange = true;
       continue;
     }
     if (SUCCEEDED(hr)) {

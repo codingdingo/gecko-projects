@@ -27,7 +27,7 @@
 #include "mozilla/dom/MediaStreamBinding.h"
 #include "mozilla/dom/MediaStreamTrackBinding.h"
 #include "mozilla/dom/MediaStreamError.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "DOMMediaStream.h"
 
 #ifdef MOZ_WEBRTC
@@ -49,7 +49,7 @@ struct MediaTrackConstraintSet;
 }
 
 extern PRLogModuleInfo* GetMediaManagerLog();
-#define MM_LOG(msg) PR_LOG(GetMediaManagerLog(), PR_LOG_DEBUG, msg)
+#define MM_LOG(msg) MOZ_LOG(GetMediaManagerLog(), PR_LOG_DEBUG, msg)
 
 /**
  * This class is an implementation of MediaStreamListener. This is used

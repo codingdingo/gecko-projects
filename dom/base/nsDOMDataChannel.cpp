@@ -7,11 +7,11 @@
 #include "nsDOMDataChannel.h"
 
 #include "base/basictypes.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 extern PRLogModuleInfo* GetDataChannelLog();
 #undef LOG
-#define LOG(args) PR_LOG(GetDataChannelLog(), PR_LOG_DEBUG, args)
+#define LOG(args) MOZ_LOG(GetDataChannelLog(), PR_LOG_DEBUG, args)
 
 
 #include "nsDOMDataChannelDeclarations.h"
@@ -270,16 +270,13 @@ nsDOMDataChannel::Send(Blob& aData, ErrorResult& aRv)
   MOZ_ASSERT(NS_IsMainThread(), "Not running on main thread");
 
   nsCOMPtr<nsIInputStream> msgStream;
-  nsresult rv = aData.GetInternalStream(getter_AddRefs(msgStream));
-  if (NS_FAILED(rv)) {
-    aRv.Throw(rv);
+  aData.GetInternalStream(getter_AddRefs(msgStream), aRv);
+  if (NS_WARN_IF(aRv.Failed())){
     return;
   }
 
-  uint64_t msgLength;
-  rv = aData.GetSize(&msgLength);
-  if (NS_FAILED(rv)) {
-    aRv.Throw(rv);
+  uint64_t msgLength = aData.GetSize(aRv);
+  if (NS_WARN_IF(aRv.Failed())){
     return;
   }
 

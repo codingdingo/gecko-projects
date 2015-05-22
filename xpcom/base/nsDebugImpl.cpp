@@ -17,7 +17,7 @@
 #include "nsString.h"
 #include "nsXULAppAPI.h"
 #include "prprf.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "nsError.h"
 #include "prerror.h"
 #include "prerr.h"
@@ -372,7 +372,7 @@ NS_DebugBreak(uint32_t aSeverity, const char* aStr, const char* aExpr,
 #  undef PrintToBuffer
 
   // Write out the message to the debug log
-  PR_LOG(gDebugLog, ll, ("%s", buf.buffer));
+  MOZ_LOG(gDebugLog, ll, ("%s", buf.buffer));
   PR_LogFlush();
 
   // errors on platforms without a debugdlg ring a bell on stderr

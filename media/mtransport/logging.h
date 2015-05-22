@@ -10,7 +10,7 @@
 #define logging_h__
 
 #include <sstream>
-#include <prlog.h>
+#include "mozilla/Logging.h"
 
 #define ML_EMERG            1
 #define ML_ERROR            2
@@ -32,7 +32,7 @@
     if (PR_LOG_TEST(getLogModule(), level)) {                           \
       std::stringstream str;                                            \
       str << b;                                                         \
-      PR_LOG(getLogModule(), level, ("%s", str.str().c_str()));         \
+      MOZ_LOG(getLogModule(), level, ("%s", str.str().c_str()));         \
     }                                                                   \
   } while(0)
 

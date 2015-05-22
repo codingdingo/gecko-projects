@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "nsSpeechTask.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #include "mozilla/dom/ContentChild.h"
 #include "mozilla/dom/Element.h"
@@ -27,7 +27,7 @@ GetSpeechSynthLog()
 
   return sLog;
 }
-#define LOG(type, msg) PR_LOG(GetSpeechSynthLog(), type, msg)
+#define LOG(type, msg) MOZ_LOG(GetSpeechSynthLog(), type, msg)
 
 namespace mozilla {
 namespace dom {

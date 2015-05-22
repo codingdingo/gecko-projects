@@ -14,7 +14,7 @@
 #include "nsStringStream.h"
 #include "nsToolkitCompsCID.h"
 #include "nsUrlClassifierStreamUpdater.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "nsIInterfaceRequestor.h"
 #include "mozilla/LoadContext.h"
 #include "nsContentUtils.h"
@@ -25,7 +25,7 @@ static const char* gQuitApplicationMessage = "quit-application";
 
 // NSPR_LOG_MODULES=UrlClassifierStreamUpdater:5
 static const PRLogModuleInfo *gUrlClassifierStreamUpdaterLog = nullptr;
-#define LOG(args) PR_LOG(gUrlClassifierStreamUpdaterLog, PR_LOG_DEBUG, args)
+#define LOG(args) MOZ_LOG(gUrlClassifierStreamUpdaterLog, PR_LOG_DEBUG, args)
 
 // This class does absolutely nothing, except pass requests onto the DBService.
 

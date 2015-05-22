@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "GMPVideoDecoderParent.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "mozilla/unused.h"
 #include "nsAutoRef.h"
 #include "nsThreadUtils.h"
@@ -23,8 +23,8 @@ namespace mozilla {
 
 extern PRLogModuleInfo* GetGMPLog();
 
-#define LOGD(msg) PR_LOG(GetGMPLog(), PR_LOG_DEBUG, msg)
-#define LOG(level, msg) PR_LOG(GetGMPLog(), (level), msg)
+#define LOGD(msg) MOZ_LOG(GetGMPLog(), PR_LOG_DEBUG, msg)
+#define LOG(level, msg) MOZ_LOG(GetGMPLog(), (level), msg)
 
 namespace gmp {
 

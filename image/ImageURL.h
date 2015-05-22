@@ -44,6 +44,26 @@ public:
     return NS_OK;
   }
 
+  /// A weak pointer to the URI spec for this ImageURL. For logging only.
+  const char* Spec() const { return mSpec.get(); }
+
+  enum TruncatedSpecStatus {
+    FitsInto1k,
+    TruncatedTo1k
+  };
+  TruncatedSpecStatus GetSpecTruncatedTo1k(nsACString& result)
+  {
+    static const size_t sMaxTruncatedLength = 1024;
+
+    if (sMaxTruncatedLength >= mSpec.Length()) {
+      result = mSpec;
+      return FitsInto1k;
+    }
+
+    result = Substring(mSpec, 0, sMaxTruncatedLength);
+    return TruncatedTo1k;
+  }
+
   nsresult GetScheme(nsACString& result)
   {
     result = mScheme;
@@ -72,6 +92,13 @@ public:
     nsCOMPtr<nsIURI> newURI;
     NS_NewURI(getter_AddRefs(newURI), mSpec);
     return newURI.forget();
+  }
+
+  bool operator==(const ImageURL& aOther) const
+  {
+    // Note that we don't need to consider mScheme and mRef, because they're
+    // already represented in mSpec.
+    return mSpec == aOther.mSpec;
   }
 
 private:

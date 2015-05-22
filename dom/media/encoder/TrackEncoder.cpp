@@ -5,7 +5,7 @@
 #include "TrackEncoder.h"
 #include "AudioChannelFormat.h"
 #include "MediaStreamGraph.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "VideoUtils.h"
 
 #undef LOG
@@ -19,7 +19,7 @@
 namespace mozilla {
 
 PRLogModuleInfo* gTrackEncoderLog;
-#define TRACK_LOG(type, msg) PR_LOG(gTrackEncoderLog, type, msg)
+#define TRACK_LOG(type, msg) MOZ_LOG(gTrackEncoderLog, type, msg)
 
 static const int DEFAULT_CHANNELS = 1;
 static const int DEFAULT_SAMPLING_RATE = 16000;

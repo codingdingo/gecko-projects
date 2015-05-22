@@ -4,7 +4,7 @@
 
 #include "WebRtcLog.h"
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "prenv.h"
 #include "webrtc/system_wrappers/interface/trace.h"
 
@@ -49,7 +49,7 @@ public:
   void Print(webrtc::TraceLevel level, const char* message, int length)
   {
     PRLogModuleInfo *log = GetWebRtcTraceLog();
-    PR_LOG(log, PR_LOG_DEBUG, ("%s", message));
+    MOZ_LOG(log, PR_LOG_DEBUG, ("%s", message));
   }
 };
 

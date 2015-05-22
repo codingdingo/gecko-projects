@@ -10,10 +10,10 @@
 #include "nsTArray.h"
 #include "mozilla/Telemetry.h"
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 PRLogModuleInfo* GetDemuxerLog();
-#define LOG(...) PR_LOG(GetDemuxerLog(), PR_LOG_DEBUG, (__VA_ARGS__))
+#define LOG(...) MOZ_LOG(GetDemuxerLog(), PR_LOG_DEBUG, (__VA_ARGS__))
 
 namespace mozilla {
 
@@ -84,8 +84,9 @@ WMFMediaDataDecoder::Shutdown()
   MOZ_DIAGNOSTIC_ASSERT(!mIsShutDown);
 
   if (mTaskQueue) {
-    mTaskQueue->Dispatch(
-      NS_NewRunnableMethod(this, &WMFMediaDataDecoder::ProcessShutdown));
+    nsCOMPtr<nsIRunnable> runnable =
+      NS_NewRunnableMethod(this, &WMFMediaDataDecoder::ProcessShutdown);
+    mTaskQueue->Dispatch(runnable.forget());
   } else {
     ProcessShutdown();
   }
@@ -226,7 +227,9 @@ WMFMediaDataDecoder::Drain()
   MOZ_ASSERT(mCallback->OnReaderTaskQueue());
   MOZ_DIAGNOSTIC_ASSERT(!mIsShutDown);
 
-  mTaskQueue->Dispatch(NS_NewRunnableMethod(this, &WMFMediaDataDecoder::ProcessDrain));
+  nsCOMPtr<nsIRunnable> runnable =
+    NS_NewRunnableMethod(this, &WMFMediaDataDecoder::ProcessDrain);
+  mTaskQueue->Dispatch(runnable.forget());
   return NS_OK;
 }
 

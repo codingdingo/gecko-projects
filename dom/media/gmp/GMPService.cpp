@@ -6,7 +6,7 @@
 #include "GMPServiceParent.h"
 #include "GMPServiceChild.h"
 #include "prio.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "GMPParent.h"
 #include "GMPVideoDecoderParent.h"
 #include "nsIObserverService.h"
@@ -50,8 +50,8 @@ GetGMPLog()
   return sLog;
 }
 
-#define LOGD(msg) PR_LOG(GetGMPLog(), PR_LOG_DEBUG, msg)
-#define LOG(level, msg) PR_LOG(GetGMPLog(), (level), msg)
+#define LOGD(msg) MOZ_LOG(GetGMPLog(), PR_LOG_DEBUG, msg)
+#define LOG(level, msg) MOZ_LOG(GetGMPLog(), (level), msg)
 
 #ifdef __CLASS__
 #undef __CLASS__

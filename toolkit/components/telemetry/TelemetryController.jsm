@@ -24,6 +24,8 @@ Cu.import("resource://gre/modules/Preferences.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource://gre/modules/TelemetryUtils.jsm", this);
 
+const Utils = TelemetryUtils;
+
 const LOGGER_NAME = "Toolkit.Telemetry";
 const LOGGER_PREFIX = "TelemetryController::";
 
@@ -49,17 +51,14 @@ const PING_FORMAT_VERSION = 4;
 const TELEMETRY_DELAY = 60000;
 // Delay before initializing telemetry if we're testing (ms)
 const TELEMETRY_TEST_DELAY = 100;
-// The number of days to keep pings serialised on the disk in case of failures.
-const DEFAULT_RETENTION_DAYS = 14;
 // Timeout after which we consider a ping submission failed.
 const PING_SUBMIT_TIMEOUT_MS = 2 * 60 * 1000;
 
-// We treat pings before midnight as happening "at midnight" with this tolerance.
-const MIDNIGHT_TOLERANCE_MS = 15 * 60 * 1000;
 // For midnight fuzzing we want to affect pings around midnight with this tolerance.
 const MIDNIGHT_TOLERANCE_FUZZ_MS = 5 * 60 * 1000;
 // We try to spread "midnight" pings out over this interval.
 const MIDNIGHT_FUZZING_INTERVAL_MS = 60 * 60 * 1000;
+// We delay sending "midnight" pings on this client by this interval.
 const MIDNIGHT_FUZZING_DELAY_MS = Math.random() * MIDNIGHT_FUZZING_INTERVAL_MS;
 
 // Ping types.
@@ -174,6 +173,7 @@ this.TelemetryController = Object.freeze({
    */
   reset: function() {
     Impl._clientID = null;
+    TelemetryStorage.reset();
     return this.setup();
   },
   /**
@@ -241,8 +241,6 @@ this.TelemetryController = Object.freeze({
    * @param {String} aType The type of the ping.
    * @param {Object} aPayload The actual data payload for the ping.
    * @param {Object} [aOptions] Options object.
-   * @param {Number} [aOptions.retentionDays=14] The number of days to keep the ping on disk
-   *                 if sending fails.
    * @param {Boolean} [aOptions.addClientId=false] true if the ping should contain the client
    *                  id, false otherwise.
    * @param {Boolean} [aOptions.addEnvironment=false] true if the ping should contain the
@@ -252,7 +250,6 @@ this.TelemetryController = Object.freeze({
    */
   savePendingPings: function(aType, aPayload, aOptions = {}) {
     let options = aOptions;
-    options.retentionDays = aOptions.retentionDays || DEFAULT_RETENTION_DAYS;
     options.addClientId = aOptions.addClientId || false;
     options.addEnvironment = aOptions.addEnvironment || false;
 
@@ -265,8 +262,6 @@ this.TelemetryController = Object.freeze({
    * @param {String} aType The type of the ping.
    * @param {Object} aPayload The actual data payload for the ping.
    * @param {Object} [aOptions] Options object.
-   * @param {Number} [aOptions.retentionDays=14] The number of days to keep the ping on disk
-   *                 if sending fails.
    * @param {Boolean} [aOptions.addClientId=false] true if the ping should contain the client
    *                  id, false otherwise.
    * @param {Boolean} [aOptions.addEnvironment=false] true if the ping should contain the
@@ -280,7 +275,6 @@ this.TelemetryController = Object.freeze({
    */
   addPendingPing: function(aType, aPayload, aOptions = {}) {
     let options = aOptions;
-    options.retentionDays = aOptions.retentionDays || DEFAULT_RETENTION_DAYS;
     options.addClientId = aOptions.addClientId || false;
     options.addEnvironment = aOptions.addEnvironment || false;
     options.overwrite = aOptions.overwrite || false;
@@ -325,8 +319,6 @@ this.TelemetryController = Object.freeze({
    * @param {Object} aPayload The actual data payload for the ping.
    * @param {String} aFilePath The path to save the ping to.
    * @param {Object} [aOptions] Options object.
-   * @param {Number} [aOptions.retentionDays=14] The number of days to keep the ping on disk
-   *                 if sending fails.
    * @param {Boolean} [aOptions.addClientId=false] true if the ping should contain the client
    *                  id, false otherwise.
    * @param {Boolean} [aOptions.addEnvironment=false] true if the ping should contain the
@@ -340,7 +332,6 @@ this.TelemetryController = Object.freeze({
    */
   savePing: function(aType, aPayload, aFilePath, aOptions = {}) {
     let options = aOptions;
-    options.retentionDays = aOptions.retentionDays || DEFAULT_RETENTION_DAYS;
     options.addClientId = aOptions.addClientId || false;
     options.addEnvironment = aOptions.addEnvironment || false;
     options.overwrite = aOptions.overwrite || false;
@@ -542,7 +533,16 @@ let Impl = {
    * @return Number The next time (ms from UNIX epoch) when we can send pings.
    */
   _getNextPingSendTime: function(now) {
-    const midnight = TelemetryUtils.getNearestMidnight(now, MIDNIGHT_FUZZING_INTERVAL_MS);
+    // 1. First we check if the time is between 11pm and 1am. If it's not, we send
+    // immediately.
+    // 2. If we confirmed the time is indeed between 11pm and 1am in step 1, we
+    // then check if the time is also 11:55pm or later. If it's not, we send
+    // immediately.
+    // 3. Finally, if the time is between 11:55pm and 1am, we disallow sending
+    // before (midnight + fuzzing delay), which is a random time between 12am-1am
+    // (decided at startup).
+
+    const midnight = Utils.getNearestMidnight(now, MIDNIGHT_FUZZING_INTERVAL_MS);
 
     // Don't delay ping if we are not close to midnight.
     if (!midnight) {
@@ -665,8 +665,6 @@ let Impl = {
    * @param {String} aType The type of the ping.
    * @param {Object} aPayload The actual data payload for the ping.
    * @param {Object} aOptions Options object.
-   * @param {Number} aOptions.retentionDays The number of days to keep the ping on disk
-   *                 if sending fails.
    * @param {Boolean} aOptions.addClientId true if the ping should contain the client id,
    *                  false otherwise.
    * @param {Boolean} aOptions.addEnvironment true if the ping should contain the
@@ -689,8 +687,6 @@ let Impl = {
    * @param {String} aType The type of the ping.
    * @param {Object} aPayload The actual data payload for the ping.
    * @param {Object} aOptions Options object.
-   * @param {Number} aOptions.retentionDays The number of days to keep the ping on disk
-   *                 if sending fails.
    * @param {Boolean} aOptions.addClientId true if the ping should contain the client id,
    *                  false otherwise.
    * @param {Boolean} aOptions.addEnvironment true if the ping should contain the
@@ -728,8 +724,6 @@ let Impl = {
    * @param {Object} aPayload The actual data payload for the ping.
    * @param {String} aFilePath The path to save the ping to.
    * @param {Object} aOptions Options object.
-   * @param {Number} aOptions.retentionDays The number of days to keep the ping on disk
-   *                 if sending fails.
    * @param {Boolean} aOptions.addClientId true if the ping should contain the client id,
    *                  false otherwise.
    * @param {Boolean} aOptions.addEnvironment true if the ping should contain the
@@ -790,6 +784,7 @@ let Impl = {
   onPingRequestFinished: function(success, startTime, ping, isPersisted) {
     this._log.trace("onPingRequestFinished - success: " + success + ", persisted: " + isPersisted);
 
+    Telemetry.getHistogramById("TELEMETRY_SEND").add(new Date() - startTime);
     let hping = Telemetry.getHistogramById("TELEMETRY_PING");
     let hsuccess = Telemetry.getHistogramById("TELEMETRY_SUCCESS");
 
@@ -923,11 +918,16 @@ let Impl = {
     let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
                     .createInstance(Ci.nsIScriptableUnicodeConverter);
     converter.charset = "UTF-8";
+    startTime = new Date();
     let utf8Payload = converter.ConvertFromUnicode(JSON.stringify(networkPayload));
     utf8Payload += converter.Finish();
+    Telemetry.getHistogramById("TELEMETRY_STRINGIFY").add(new Date() - startTime);
     let payloadStream = Cc["@mozilla.org/io/string-input-stream;1"]
                         .createInstance(Ci.nsIStringInputStream);
+    startTime = new Date();
     payloadStream.data = this.gzipCompressString(utf8Payload);
+    Telemetry.getHistogramById("TELEMETRY_COMPRESS").add(new Date() - startTime);
+    startTime = new Date();
     request.send(payloadStream);
 
     return deferred.promise;
@@ -1061,6 +1061,10 @@ let Impl = {
         this._clientID = yield ClientID.getClientID();
         Preferences.set(PREF_CACHED_CLIENTID, this._clientID);
 
+        // Purge the pings archive by removing outdated pings. We don't wait for this
+        // task to complete, but TelemetryStorage blocks on it during shutdown.
+        TelemetryStorage.runCleanPingArchiveTask();
+
         Telemetry.asyncFetchTelemetryData(function () {});
         this._delayedInitTaskDeferred.resolve();
       } catch (e) {
@@ -1179,12 +1183,23 @@ let Impl = {
    * Check if pings can be sent to the server. If FHR is not allowed to upload,
    * pings are not sent to the server (Telemetry is a sub-feature of FHR).
    * If unified telemetry is off, don't send pings if Telemetry is disabled.
+   *
    * @return {Boolean} True if pings can be send to the servers, false otherwise.
    */
   _canSend: function() {
-    return (Telemetry.isOfficialTelemetry || this._testMode) &&
-           Preferences.get(PREF_FHR_UPLOAD_ENABLED, false) &&
-           (IS_UNIFIED_TELEMETRY || Preferences.get(PREF_ENABLED));
+    // We only send pings from official builds, but allow overriding this for tests.
+    if (!Telemetry.isOfficialTelemetry && !this._testMode) {
+      return false;
+    }
+
+    // With unified Telemetry, the FHR upload setting controls whether we can send pings.
+    // The Telemetry pref enables sending extended data sets instead.
+    if (IS_UNIFIED_TELEMETRY) {
+      return Preferences.get(PREF_FHR_UPLOAD_ENABLED, false);
+    }
+
+    // Without unified Telemetry, the Telemetry enabled pref controls ping sending.
+    return Preferences.get(PREF_ENABLED, false);
   },
 
   /**

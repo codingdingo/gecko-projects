@@ -8,7 +8,7 @@
  * Implementation of the "@mozilla.org/layout/content-policy;1" contract.
  */
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #include "nsISupports.h"
 #include "nsXPCOM.h"
@@ -203,7 +203,7 @@ nsContentPolicy::CheckPolicy(CPMethod          policyMethod,
       if (requestingLocation) {                                               \
           requestingLocation->GetSpec(refSpec);                               \
       }                                                                       \
-      PR_LOG(gConPolLog, PR_LOG_DEBUG,                                        \
+      MOZ_LOG(gConPolLog, PR_LOG_DEBUG,                                        \
              ("Content Policy: " logType ": <%s> <Ref:%s> result=%s",         \
               spec.get(), refSpec.get(), resultName)                          \
              );                                                               \

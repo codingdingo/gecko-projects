@@ -447,7 +447,7 @@ ReadBlobOrFile(JSContext* aCx,
                JS::MutableHandle<JSObject*> aBlobOrFile)
 {
   nsRefPtr<Blob> blob = ReadBlobOrFileNoWrap(aCx, aReader, aIsMainThread);
-  aBlobOrFile.set(blob->WrapObject(aCx, JS::NullPtr()));
+  aBlobOrFile.set(blob->WrapObject(aCx, nullptr));
 }
 
 // See WriteFormData for serialization format.
@@ -505,7 +505,7 @@ ReadFormData(JSContext* aCx,
     }
   }
 
-  aFormData.set(formData->WrapObject(aCx, JS::NullPtr()));
+  aFormData.set(formData->WrapObject(aCx, nullptr));
 }
 
 bool
@@ -5641,15 +5641,6 @@ WorkerPrivate::WaitForWorkerEvents(PRIntervalTime aInterval)
 
   // The main thread may be waiting so we must notify.
   mMemoryReportCondVar.Notify();
-
-#ifdef MOZ_NUWA_PROCESS
-  {
-    MOZ_ASSERT(mThread);
-
-    ReentrantMonitorAutoEnter mon(mThread->ThreadStatusMonitor());
-    mThread->SetIdle();
-  }
-#endif // MOZ_NUWA_PROCESS
 
   // Now wait for an actual worker event.
   mCondVar.Wait(aInterval);

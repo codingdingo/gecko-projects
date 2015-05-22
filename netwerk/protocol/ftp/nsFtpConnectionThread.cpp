@@ -7,7 +7,7 @@
 #include <ctype.h>
 
 #include "prprf.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "prtime.h"
 
 #include "nsIOService.h"
@@ -46,8 +46,8 @@
 #endif
 
 extern PRLogModuleInfo* gFTPLog;
-#define LOG(args)         PR_LOG(gFTPLog, PR_LOG_DEBUG, args)
-#define LOG_ALWAYS(args)  PR_LOG(gFTPLog, PR_LOG_ALWAYS, args)
+#define LOG(args)         MOZ_LOG(gFTPLog, PR_LOG_DEBUG, args)
+#define LOG_ALWAYS(args)  MOZ_LOG(gFTPLog, PR_LOG_ALWAYS, args)
 
 using namespace mozilla::net;
 

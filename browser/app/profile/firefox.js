@@ -383,6 +383,10 @@ pref("browser.helperApps.deleteTempFileOnExit", true);
 // search engines URL
 pref("browser.search.searchEnginesURL",      "https://addons.mozilla.org/%LOCALE%/firefox/search-engines/");
 
+// Tell the search service to load search plugins from the locale JAR
+pref("browser.search.loadFromJars", true);
+pref("browser.search.jarURIs", "chrome://browser/locale/searchplugins/");
+
 // pointer to the default engine name
 pref("browser.search.defaultenginename",      "chrome://browser-region/locale/region.properties");
 
@@ -1442,7 +1446,9 @@ pref("devtools.performance.enabled", true);
 
 // The default Performance UI settings
 pref("devtools.performance.memory.sample-probability", "0.05");
-pref("devtools.performance.memory.max-log-length", 2147483647); // Math.pow(2,31) - 1
+// Can't go higher than this without causing internal allocation overflows while
+// serializing the allocations data over the RDP.
+pref("devtools.performance.memory.max-log-length", 125000);
 pref("devtools.performance.timeline.hidden-markers", "[]");
 pref("devtools.performance.profiler.buffer-size", 10000000);
 pref("devtools.performance.profiler.sample-frequency-khz", 1);

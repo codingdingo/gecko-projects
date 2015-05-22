@@ -326,7 +326,6 @@ struct BindData;
 
 class CompExprTransplanter;
 
-enum LetContext { LetExpression, LetStatement };
 enum VarContext { HoistVars, DontHoistVars };
 enum PropListType { ObjectLiteral, ClassBody };
 
@@ -629,7 +628,7 @@ class Parser : private JS::AutoGCRooter, public StrictModeGetter
     Node generatorComprehension(uint32_t begin);
 
     bool argumentList(YieldHandling yieldHandling, Node listNode, bool* isSpread);
-    Node deprecatedLetBlockOrExpression(YieldHandling yieldHandling, LetContext letContext);
+    Node deprecatedLetBlock(YieldHandling yieldHandling);
     Node destructuringExpr(YieldHandling yieldHandling, BindData<ParseHandler>* data,
                            TokenKind tt);
     Node destructuringExprWithoutYield(YieldHandling yieldHandling, BindData<ParseHandler>* data,
@@ -694,7 +693,6 @@ class Parser : private JS::AutoGCRooter, public StrictModeGetter
     bool checkDestructuringObject(BindData<ParseHandler>* data, Node objectPattern);
     bool checkDestructuringArray(BindData<ParseHandler>* data, Node arrayPattern);
     bool bindInitialized(BindData<ParseHandler>* data, Node pn);
-    bool bindDestructuringLHS(Node pn);
     bool makeSetCall(Node pn, unsigned msg);
     Node cloneDestructuringDefault(Node opn);
     Node cloneLeftHandSide(Node opn);

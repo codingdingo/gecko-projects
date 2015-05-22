@@ -174,7 +174,7 @@
 #include "nsFrameLoader.h"
 #include "nsISupportsPrimitives.h"
 #include "nsXPCOMCID.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "prenv.h"
 #include "prprf.h"
 
@@ -1211,7 +1211,7 @@ nsGlobalWindow::nsGlobalWindow(nsGlobalWindow *aOuterWindow)
 #endif
 
   if (gDOMLeakPRLog)
-    PR_LOG(gDOMLeakPRLog, PR_LOG_DEBUG,
+    MOZ_LOG(gDOMLeakPRLog, PR_LOG_DEBUG,
            ("DOMWINDOW %p created outer=%p", this, aOuterWindow));
 
   NS_ASSERTION(sWindowsById, "Windows hash table must be created!");
@@ -1301,7 +1301,7 @@ nsGlobalWindow::~nsGlobalWindow()
 #endif
 
   if (gDOMLeakPRLog)
-    PR_LOG(gDOMLeakPRLog, PR_LOG_DEBUG,
+    MOZ_LOG(gDOMLeakPRLog, PR_LOG_DEBUG,
            ("DOMWINDOW %p destroyed", this));
 
   if (IsOuterWindow()) {
@@ -8150,7 +8150,7 @@ PostMessageReadTransferStructuredClone(JSContext* aCx,
     port->BindToOwner(scInfo->window);
     scInfo->ports.Put(port, nullptr);
 
-    JS::Rooted<JSObject*> obj(aCx, port->WrapObject(aCx, JS::NullPtr()));
+    JS::Rooted<JSObject*> obj(aCx, port->WrapObject(aCx, nullptr));
     if (JS_WrapObject(aCx, &obj)) {
       MOZ_ASSERT(port->GetOwner() == scInfo->window);
       returnObject.set(obj);

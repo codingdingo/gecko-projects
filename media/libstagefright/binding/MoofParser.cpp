@@ -7,7 +7,7 @@
 #include "mp4_demuxer/SinfParser.h"
 #include <limits>
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #if defined(MOZ_FMP4)
 extern PRLogModuleInfo* GetDemuxerLog();
@@ -19,7 +19,7 @@ extern PRLogModuleInfo* GetDemuxerLog();
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define LOG(name, arg, ...) PR_LOG(GetDemuxerLog(), PR_LOG_DEBUG, (TOSTRING(name) "(%p)::%s: " arg, this, __func__, ##__VA_ARGS__))
+#define LOG(name, arg, ...) MOZ_LOG(GetDemuxerLog(), PR_LOG_DEBUG, (TOSTRING(name) "(%p)::%s: " arg, this, __func__, ##__VA_ARGS__))
 #else
 #define LOG(...)
 #endif

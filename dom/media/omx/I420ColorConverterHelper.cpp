@@ -8,10 +8,10 @@
 
 #include <dlfcn.h>
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 PRLogModuleInfo *gI420ColorConverterHelperLog;
-#define LOG(msg...) PR_LOG(gI420ColorConverterHelperLog, PR_LOG_WARNING, (msg))
+#define LOG(msg...) MOZ_LOG(gI420ColorConverterHelperLog, PR_LOG_WARNING, (msg))
 
 namespace android {
 

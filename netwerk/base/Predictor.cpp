@@ -32,7 +32,7 @@
 #ifdef MOZ_NUWA_PROCESS
 #include "ipc/Nuwa.h"
 #endif
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #include "mozilla/Preferences.h"
 #include "mozilla/Telemetry.h"
@@ -54,7 +54,7 @@ namespace net {
 Predictor *Predictor::sSelf = nullptr;
 
 static PRLogModuleInfo *gPredictorLog = nullptr;
-#define PREDICTOR_LOG(args) PR_LOG(gPredictorLog, 4, args)
+#define PREDICTOR_LOG(args) MOZ_LOG(gPredictorLog, 4, args)
 
 #define RETURN_IF_FAILED(_rv) \
   do { \

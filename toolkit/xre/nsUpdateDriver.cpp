@@ -15,7 +15,7 @@
 #include "nsCOMPtr.h"
 #include "nsString.h"
 #include "prproces.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "prenv.h"
 #include "nsVersionComparator.h"
 #include "nsXREDirProvider.h"
@@ -79,7 +79,7 @@ GetUpdateLog()
     sUpdateLog = PR_NewLogModule("updatedriver");
   return sUpdateLog;
 }
-#define LOG(args) PR_LOG(GetUpdateLog(), PR_LOG_DEBUG, args)
+#define LOG(args) MOZ_LOG(GetUpdateLog(), PR_LOG_DEBUG, args)
 
 #ifdef XP_WIN
 #define UPDATER_BIN "updater.exe"

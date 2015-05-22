@@ -8,14 +8,14 @@
 #include "AudioSinkFilter.h"
 #include "AudioSinkInputPin.h"
 #include "VideoUtils.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 using namespace mozilla::media;
 
 namespace mozilla {
 
 PRLogModuleInfo* GetDirectShowLog();
-#define LOG(...) PR_LOG(GetDirectShowLog(), PR_LOG_DEBUG, (__VA_ARGS__))
+#define LOG(...) MOZ_LOG(GetDirectShowLog(), PR_LOG_DEBUG, (__VA_ARGS__))
 
 SampleSink::SampleSink()
   : mMonitor("SampleSink"),

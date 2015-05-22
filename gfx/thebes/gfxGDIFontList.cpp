@@ -6,7 +6,7 @@
 #include "mozilla/DebugOnly.h"
 #include <algorithm>
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #include "gfxGDIFontList.h"
 #include "gfxWindowsPlatform.h"
@@ -40,7 +40,7 @@ using namespace mozilla;
 #define CLEARTYPE_QUALITY 5
 #endif
 
-#define LOG_FONTLIST(args) PR_LOG(gfxPlatform::GetLog(eGfxLog_fontlist), \
+#define LOG_FONTLIST(args) MOZ_LOG(gfxPlatform::GetLog(eGfxLog_fontlist), \
                                PR_LOG_DEBUG, args)
 #define LOG_FONTLIST_ENABLED() PR_LOG_TEST( \
                                    gfxPlatform::GetLog(eGfxLog_fontlist), \

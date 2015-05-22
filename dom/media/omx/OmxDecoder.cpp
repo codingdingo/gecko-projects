@@ -26,7 +26,7 @@
 #include "mozilla/Monitor.h"
 #include "nsMimeTypes.h"
 #include "MPAPI.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 
 #include "GonkNativeWindow.h"
 #include "GonkNativeWindowClient.h"
@@ -38,7 +38,7 @@
 
 #undef LOG
 PRLogModuleInfo *gOmxDecoderLog;
-#define LOG(type, msg...) PR_LOG(gOmxDecoderLog, type, (msg))
+#define LOG(type, msg...) MOZ_LOG(gOmxDecoderLog, type, (msg))
 
 using namespace MPAPI;
 using namespace mozilla;

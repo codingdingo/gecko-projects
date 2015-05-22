@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "TouchCaret.h"
 
 #include <algorithm>
@@ -42,12 +42,12 @@ static const char* kTouchCaretLogModuleName = "TouchCaret";
 // To enable all the TOUCHCARET_LOG print statements, set the environment
 // variable NSPR_LOG_MODULES=TouchCaret:5
 #define TOUCHCARET_LOG(message, ...)                                           \
-  PR_LOG(gTouchCaretLog, PR_LOG_DEBUG,                                         \
+  MOZ_LOG(gTouchCaretLog, PR_LOG_DEBUG,                                         \
          ("TouchCaret (%p): %s:%d : " message "\n", this, __FUNCTION__,        \
           __LINE__, ##__VA_ARGS__));
 
 #define TOUCHCARET_LOG_STATIC(message, ...)                                    \
-  PR_LOG(gTouchCaretLog, PR_LOG_DEBUG,                                         \
+  MOZ_LOG(gTouchCaretLog, PR_LOG_DEBUG,                                         \
          ("TouchCaret: %s:%d : " message "\n", __FUNCTION__, __LINE__,         \
           ##__VA_ARGS__));
 

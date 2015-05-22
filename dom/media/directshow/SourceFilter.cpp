@@ -9,7 +9,7 @@
 #include "mozilla/RefPtr.h"
 #include "DirectShowUtils.h"
 #include "MP3FrameParser.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include <algorithm>
 
 using namespace mozilla::media;
@@ -21,7 +21,7 @@ namespace mozilla {
 
 #if defined (DEBUG_SOURCE_TRACE)
 PRLogModuleInfo* GetDirectShowLog();
-#define DIRECTSHOW_LOG(...) PR_LOG(GetDirectShowLog(), PR_LOG_DEBUG, (__VA_ARGS__))
+#define DIRECTSHOW_LOG(...) MOZ_LOG(GetDirectShowLog(), PR_LOG_DEBUG, (__VA_ARGS__))
 #else
 #define DIRECTSHOW_LOG(...)
 #endif

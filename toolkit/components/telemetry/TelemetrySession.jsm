@@ -22,6 +22,8 @@ Cu.import("resource://gre/modules/Task.jsm");
 Cu.import("resource://gre/modules/Timer.jsm");
 Cu.import("resource://gre/modules/TelemetryUtils.jsm", this);
 
+const Utils = TelemetryUtils;
+
 const myScope = this;
 
 const IS_CONTENT_PROCESS = (function() {
@@ -35,7 +37,6 @@ const IS_CONTENT_PROCESS = (function() {
 const PAYLOAD_VERSION = 4;
 const PING_TYPE_MAIN = "main";
 const PING_TYPE_SAVED_SESSION = "saved-session";
-const RETENTION_DAYS = 14;
 
 const REASON_ABORTED_SESSION = "aborted-session";
 const REASON_DAILY = "daily";
@@ -425,7 +426,7 @@ let TelemetryScheduler = {
       timeout = SCHEDULER_TICK_IDLE_INTERVAL_MS;
       // We need to make sure though that we don't miss sending pings around
       // midnight when we use the longer idle intervals.
-      const nextMidnight = TelemetryUtils.getNextMidnight(now);
+      const nextMidnight = Utils.getNextMidnight(now);
       timeout = Math.min(timeout, nextMidnight.getTime() - now.getTime());
     }
 
@@ -436,8 +437,8 @@ let TelemetryScheduler = {
 
   _sentDailyPingToday: function(nowDate) {
     // This is today's date and also the previous midnight (0:00).
-    const todayDate = TelemetryUtils.truncateToDays(nowDate);
-    const nearestMidnight = TelemetryUtils.getNearestMidnight(nowDate, SCHEDULER_MIDNIGHT_TOLERANCE_MS);
+    const todayDate = Utils.truncateToDays(nowDate);
+    const nearestMidnight = Utils.getNearestMidnight(nowDate, SCHEDULER_MIDNIGHT_TOLERANCE_MS);
     // If we are close to midnight, we check against that, otherwise against the last midnight.
     const checkDate = nearestMidnight || todayDate;
     // We consider a ping sent for today if it occured after midnight, or prior within the tolerance.
@@ -458,7 +459,7 @@ let TelemetryScheduler = {
       return false;
     }
 
-    const nearestMidnight = TelemetryUtils.getNearestMidnight(nowDate, SCHEDULER_MIDNIGHT_TOLERANCE_MS);
+    const nearestMidnight = Utils.getNearestMidnight(nowDate, SCHEDULER_MIDNIGHT_TOLERANCE_MS);
     if (!sentPingToday && !nearestMidnight) {
       // Computer must have gone to sleep, the daily ping is overdue.
       this._log.trace("_isDailyPingDue - daily ping is overdue... computer went to sleep?");
@@ -568,7 +569,7 @@ let TelemetryScheduler = {
     let nextSessionCheckpoint =
       this._lastSessionCheckpointTime + ABORTED_SESSION_UPDATE_INTERVAL_MS;
     let combineActions = (shouldSendDaily && isAbortedPingDue) || (shouldSendDaily &&
-                          TelemetryUtils.areTimesClose(now, nextSessionCheckpoint,
+                          Utils.areTimesClose(now, nextSessionCheckpoint,
                                                        SCHEDULER_COALESCE_THRESHOLD_MS));
 
     if (combineActions) {
@@ -614,7 +615,7 @@ let TelemetryScheduler = {
       // update the schedules.
       this._saveAbortedPing(now.getTime(), competingPayload);
       // If we're close to midnight, skip today's daily ping and reschedule it for tomorrow.
-      let nearestMidnight = TelemetryUtils.getNearestMidnight(now, SCHEDULER_MIDNIGHT_TOLERANCE_MS);
+      let nearestMidnight = Utils.getNearestMidnight(now, SCHEDULER_MIDNIGHT_TOLERANCE_MS);
       if (nearestMidnight) {
         this._lastDailyPingTime = now.getTime();
       }
@@ -1103,8 +1104,8 @@ let Impl = {
   getMetadata: function getMetadata(reason) {
     this._log.trace("getMetadata - Reason " + reason);
 
-    let sessionStartDate = toLocalTimeISOString(TelemetryUtils.truncateToDays(this._sessionStartDate));
-    let subsessionStartDate = toLocalTimeISOString(TelemetryUtils.truncateToDays(this._subsessionStartDate));
+    let sessionStartDate = toLocalTimeISOString(Utils.truncateToDays(this._sessionStartDate));
+    let subsessionStartDate = toLocalTimeISOString(Utils.truncateToDays(this._subsessionStartDate));
     // Compute the subsession length in milliseconds, then convert to seconds.
     let subsessionLength =
       Math.floor((Policy.now() - this._subsessionStartDate.getTime()) / 1000);
@@ -1392,7 +1393,6 @@ let Impl = {
     const isSubsession = !this._isClassicReason(reason);
     let payload = this.getSessionPayload(reason, isSubsession);
     let options = {
-      retentionDays: RETENTION_DAYS,
       addClientId: true,
       addEnvironment: true,
     };
@@ -1631,7 +1631,6 @@ let Impl = {
     }
 
     let options = {
-      retentionDays: RETENTION_DAYS,
       addClientId: true,
       addEnvironment: true,
       overwrite: true,
@@ -1652,7 +1651,6 @@ let Impl = {
     this._log.trace("savePendingPingsClassic");
     let payload = this.getSessionPayload(REASON_SAVED_SESSION, false);
     let options = {
-      retentionDays: RETENTION_DAYS,
       addClientId: true,
       addEnvironment: true,
     };
@@ -1663,7 +1661,6 @@ let Impl = {
     this._log.trace("testSaveHistograms - Path: " + file.path);
     let payload = this.getSessionPayload(REASON_SAVED_SESSION, false);
     let options = {
-      retentionDays: RETENTION_DAYS,
       addClientId: true,
       addEnvironment: true,
       overwrite: true,
@@ -1814,7 +1811,6 @@ let Impl = {
       if (Telemetry.isOfficialTelemetry) {
         let payload = this.getSessionPayload(REASON_SAVED_SESSION, false);
         let options = {
-          retentionDays: RETENTION_DAYS,
           addClientId: true,
           addEnvironment: true,
           overwrite: true,
@@ -1896,7 +1892,6 @@ let Impl = {
     let payload = this.getSessionPayload(REASON_DAILY, true);
 
     let options = {
-      retentionDays: RETENTION_DAYS,
       addClientId: true,
       addEnvironment: true,
     };
@@ -1972,7 +1967,6 @@ let Impl = {
     TelemetryScheduler.reschedulePings(REASON_ENVIRONMENT_CHANGE, payload);
 
     let options = {
-      retentionDays: RETENTION_DAYS,
       addClientId: true,
       addEnvironment: true,
       overrideEnvironment: oldEnvironment,

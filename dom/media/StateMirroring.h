@@ -16,7 +16,7 @@
 #include "mozilla/UniquePtr.h"
 #include "mozilla/unused.h"
 
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "nsISupportsImpl.h"
 
 /*
@@ -50,7 +50,7 @@ namespace mozilla {
 // the same log module.
 #define MIRROR_LOG(x, ...) \
   MOZ_ASSERT(gStateWatchingLog); \
-  PR_LOG(gStateWatchingLog, PR_LOG_DEBUG, (x, ##__VA_ARGS__))
+  MOZ_LOG(gStateWatchingLog, PR_LOG_DEBUG, (x, ##__VA_ARGS__))
 
 template<typename T> class AbstractMirror;
 

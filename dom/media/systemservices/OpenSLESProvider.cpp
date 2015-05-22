@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "OpenSLESProvider.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "nsDebug.h"
 
 #include <dlfcn.h>
@@ -15,7 +15,7 @@
 #undef LOG
 #undef LOG_ENABLED
 PRLogModuleInfo *gOpenSLESProviderLog;
-#define LOG(args) PR_LOG(gOpenSLESProviderLog, PR_LOG_DEBUG, args)
+#define LOG(args) MOZ_LOG(gOpenSLESProviderLog, PR_LOG_DEBUG, args)
 #define LOG_ENABLED() PR_LOG_TEST(gOpenSLESProviderLog, PR_LOG_DEBUG)
 
 namespace mozilla {

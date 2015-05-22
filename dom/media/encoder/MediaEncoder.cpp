@@ -6,7 +6,7 @@
 #include "MediaDecoder.h"
 #include "nsIPrincipal.h"
 #include "nsMimeTypes.h"
-#include "prlog.h"
+#include "mozilla/Logging.h"
 #include "mozilla/Preferences.h"
 #include "mozilla/StaticPtr.h"
 
@@ -32,7 +32,7 @@
 #endif
 
 PRLogModuleInfo* gMediaEncoderLog;
-#define LOG(type, msg) PR_LOG(gMediaEncoderLog, type, msg)
+#define LOG(type, msg) MOZ_LOG(gMediaEncoderLog, type, msg)
 
 namespace mozilla {
 

@@ -2031,10 +2031,12 @@ MaybeRemoveCorruptDirectory(const nsAString& aLeafName, nsIFile* aDir)
     return false;
   }
 
-  NS_WARNING("QuotaManager removing corrupt morgue directory.");
+  NS_WARNING("QuotaManager removing corrupt morgue directory!");
 
   nsresult rv = aDir->Remove(true /* recursive */);
-  NS_ENSURE_SUCCESS(rv, false);
+  if (NS_WARN_IF(NS_FAILED(rv))) {
+    return false;
+  }
 
   return true;
 #else
@@ -2634,7 +2636,7 @@ QuotaManager::GetInfoFromPrincipal(nsIPrincipal* aPrincipal,
   }
 
   nsCString origin;
-  rv = aPrincipal->GetOrigin(origin);
+  rv = aPrincipal->GetOriginNoSuffix(origin);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (origin.EqualsLiteral(kChromeOrigin)) {
