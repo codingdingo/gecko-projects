@@ -1,4 +1,3 @@
-project pages with documentation can be found at:
 
     https://developer.mozilla.org/en/Mozilla_Source_Code_Directory_Structure
 
