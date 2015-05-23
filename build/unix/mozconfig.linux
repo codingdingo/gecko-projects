@@ -6,6 +6,8 @@ fi
 
 MOZ_AUTOMATION_UPDATE_PACKAGING=${MOZ_AUTOMATION_UPDATE_PACKAGING-1}
 mk_add_options "export UPLOAD_EXTRA_FILES+=update.xml"
+mk_add_options 'export UPLOAD_EXTRA_FILES+=$(PKG_UPDATE_BASENAME).complete.mar'
+ac_add_options --enable-update-channel=nightly
 
 TINDERBOX_BUILD_BASE=$(python2.7 -c 'import json; p = json.loads(open("'"$topsrcdir"'/../buildprops.json").read())["properties"]; print "https://ftp.mozilla.org/pub/mozilla.org/firefox/tinderbox-builds/%s-%s" % (p["branch"], p["platform"])')
 mk_add_options "export TINDERBOX_BUILD_BASE=$TINDERBOX_BUILD_BASE"

@@ -156,6 +156,9 @@ pref("app.update.certs.1.commonName", "aus4.mozilla.org");
 
 pref("app.update.certs.2.issuerName", "CN=Thawte SSL CA,O=\"Thawte, Inc.\",C=US");
 pref("app.update.certs.2.commonName", "aus4.mozilla.org");
+
+pref("app.update.certs.3.issuerName", "CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US");
+pref("app.update.certs.3.commonName", "ftp.mozilla.org");
 #endif
 
 // Whether or not app updates are enabled
