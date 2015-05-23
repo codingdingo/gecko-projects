@@ -53,7 +53,7 @@ endif
 
 dir-stage := $(call mkdir_deps,$(STAGE_DIR))
 
-complete-patch:: COMPLETE_MAR=$(PKG_UPDATE_BASENAME).mar
+complete-patch:: COMPLETE_MAR=$(PKG_UPDATE_BASENAME).complete
 complete-patch:: $(dir-stage)
 ifeq ($(OS_TARGET), WINNT)
 	test -f $(UNPACKAGE)
