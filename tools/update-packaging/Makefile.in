@@ -54,6 +54,7 @@ endif
 dir-stage := $(call mkdir_deps,$(STAGE_DIR))
 
 complete-patch:: COMPLETE_MAR=$(PKG_UPDATE_BASENAME).complete
+MOZ_SIGN_CMD =
 complete-patch:: $(dir-stage)
 ifeq ($(OS_TARGET), WINNT)
 	test -f $(UNPACKAGE)
