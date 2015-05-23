@@ -1,9 +1,14 @@
 if [ "x$IS_NIGHTLY" = "xyes" ]; then
   # Some nightlies (eg: Mulet) don't want these set.
   MOZ_AUTOMATION_UPLOAD_SYMBOLS=${MOZ_AUTOMATION_UPLOAD_SYMBOLS-1}
-  MOZ_AUTOMATION_UPDATE_PACKAGING=${MOZ_AUTOMATION_UPDATE_PACKAGING-1}
   MOZ_AUTOMATION_SDK=${MOZ_AUTOMATION_SDK-1}
 fi
+
+MOZ_AUTOMATION_UPDATE_PACKAGING=${MOZ_AUTOMATION_UPDATE_PACKAGING-1}
+mk_add_options "export UPLOAD_EXTRA_FILES+=update.xml"
+
+TINDERBOX_BUILD_BASE=$(python2.7 -c 'import json; p = json.loads(open("'"$topsrcdir"'/../buildprops.json").read())["properties"]; print "https://ftp.mozilla.org/pub/mozilla.org/firefox/tinderbox-builds/%s-%s" % (p["branch"], p["platform"])')
+mk_add_options "export TINDERBOX_BUILD_BASE=$TINDERBOX_BUILD_BASE"
 
 . "$topsrcdir/build/mozconfig.common"
 

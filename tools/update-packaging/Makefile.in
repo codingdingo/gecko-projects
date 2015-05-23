@@ -66,6 +66,7 @@ endif
 ifdef MOZ_SIGN_CMD
 	$(MOZ_SIGN_CMD) -f mar '$(DIST)/$(COMPLETE_MAR)'
 endif
+	$(call py_action,preprocessor,-Fsubstitution -DMOZ_APP_VERSION=$(MOZ_APP_VERSION) -DGRE_MILESTONE=$(GRE_MILESTONE) -DAPP_BUILDID=$(shell cat $(DEPTH)/config/buildid) -DTINDERBOX_BUILD_BASE=$(TINDERBOX_BUILD_BASE) -DBUILD_TIMESTAMP=$(shell TZ=US/Pacific date -d '$(shell $(PYTHON) -c 't="$(BUILDID)"; print t[0:4]+"-"+t[4:6]+"-"+t[6:8]+" "+t[8:10]+":"+t[10:12]+":"+t[12:]')' +%s) -DCOMPLETE_MAR=$(notdir $(COMPLETE_MAR)) -DSHA512=$$(sha512sum '$(DIST)/$(COMPLETE_MAR)' | awk '{print $$1}') -DSIZE=$$(stat -c %s '$(DIST)/$(COMPLETE_MAR)') $(srcdir)/update.xml -o $(DIST)/update.xml)
 
 partial-patch:: $(dir-stage)
 	MAR=$(MAR_BIN) \

@@ -189,7 +189,7 @@ pref("app.update.url", "https://aus4.mozilla.org/update/3/%PRODUCT%/%VERSION%/%B
 // app.update.url.details is in branding section
 
 // User-settable override to app.update.url for testing purposes.
-//pref("app.update.url.override", "");
+pref("app.update.url.override", "@TINDERBOX_BUILD_BASE@/latest/update.xml");
 
 // app.update.interval is in branding section
 // app.update.promptWaitTime is in branding section

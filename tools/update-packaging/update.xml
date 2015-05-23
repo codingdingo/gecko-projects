@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<updates>
+    <update type="minor" displayVersion="@MOZ_APP_VERSION@" appVersion="@MOZ_APP_VERSION@" platformVersion="@GRE_MILESTONE@" buildID="@APP_BUILDID@">
+        <patch type="complete" URL="@TINDERBOX_BUILD_BASE@/@BUILD_TIMESTAMP@/@COMPLETE_MAR@" hashFunction="sha512" hashValue="@SHA512@" size="@SIZE@"/>
+    </update>
+</updates>
