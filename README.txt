@@ -1,4 +1,3 @@
-
     https://developer.mozilla.org/en/Mozilla_Source_Code_Directory_Structure
 
 For information on how to build Mozilla from the source code, see:
