@@ -181,9 +181,7 @@ pref("app.update.badge", true);
 #else
 pref("app.update.badge", false);
 #endif
-// Give the user x seconds to reboot before showing a badge on the hamburger
-// button. default=4 days
-pref("app.update.badgeWaitTime", 345600);
+// app.update.badgeWaitTime is in branding section
 
 // If set to true, the Update Service will apply updates in the background
 // when it finishes downloading them.
@@ -1752,13 +1750,9 @@ pref("loop.contextInConversations.enabled", true);
 
 pref("social.sidebar.unload_timeout_ms", 10000);
 
-// activation from inside of share panel is possible if activationPanelEnabled
+// Activation from inside of share panel is possible if activationPanelEnabled
 // is true. Pref'd off for release while usage testing is done through beta.
-#ifdef EARLY_BETA_OR_EARLIER
 pref("social.share.activationPanelEnabled", true);
-#else
-pref("social.share.activationPanelEnabled", false);
-#endif
 pref("social.shareDirectory", "https://activations.cdn.mozilla.net/sharePanel.html");
 
 pref("dom.identity.enabled", false);
