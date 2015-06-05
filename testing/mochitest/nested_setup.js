@@ -1,5 +1,6 @@
 
 var gTestURL = '';
+var iframe = null;
 
 function addPermissions()
 {
@@ -15,11 +16,18 @@ function addPreferences()
     insertFrame);
 }
 
+function onTestComplete()
+{
+  if (iframe) {
+    document.getElementById("holder-div").removeChild(iframe);
+  }
+}
+
 function insertFrame()
 {
-  SpecialPowers.nestedFrameSetup();
+  SpecialPowers.nestedFrameSetup(onTestComplete);
 
-  var iframe = document.createElement('iframe');
+  iframe = document.createElement('iframe');
   iframe.id = 'nested-parent-frame';
   iframe.width = "100%";
   iframe.height = "100%";
@@ -28,4 +36,5 @@ function insertFrame()
   iframe.setAttribute("mozbrowser", "true");
   iframe.src = gTestURL;
   document.getElementById("holder-div").appendChild(iframe);
+
 }

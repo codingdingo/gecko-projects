@@ -38,6 +38,7 @@ function SpecialPowers(window) {
                             "SpecialPowers.Quit",
                             "SPPingService",
                             "SPQuotaManager"];
+  this.onTestComplete = null;
   addMessageListener("SPPingService", this._messageListener);
   let self = this;
   Services.obs.addObserver(function onInnerWindowDestroyed(subject, topic, data) {
@@ -131,7 +132,7 @@ SpecialPowers.prototype.executeAfterFlushingMessageQueue = function(aCallback) {
   sendAsyncMessage("SPPingService", { op: "ping" });
 };
 
-SpecialPowers.prototype.nestedFrameSetup = function() {
+SpecialPowers.prototype.nestedFrameSetup = function(onComplete) {
   let self = this;
   Services.obs.addObserver(function onRemoteBrowserShown(subject, topic, data) {
     let frameLoader = subject;
@@ -144,6 +145,7 @@ SpecialPowers.prototype.nestedFrameSetup = function() {
 
       let mm = frame.QueryInterface(Components.interfaces.nsIFrameLoaderOwner).frameLoader.messageManager;
       self._grandChildFrameMM = mm;
+      self.onTestComplete = onComplete;
 
       self.SP_SYNC_MESSAGES.forEach(function (msgname) {
         mm.addMessageListener(msgname, function (msg) {
@@ -153,6 +155,9 @@ SpecialPowers.prototype.nestedFrameSetup = function() {
       self.SP_ASYNC_MESSAGES.forEach(function (msgname) {
         mm.addMessageListener(msgname, function (msg) {
           self._sendAsyncMessage(msgname, msg.data);
+          if (msgname === "SpecialPowers.Quit") {
+            self.onTestComplete();
+          }
         });
       });
       mm.addMessageListener("SPPAddNestedMessageListener", function(msg) {
