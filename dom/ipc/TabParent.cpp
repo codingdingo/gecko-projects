@@ -1919,7 +1919,7 @@ TabParent::RecvNotifyIMEFocus(const bool& aFocus,
                               nsIMEUpdatePreference* aPreference)
 {
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget) {
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default) {
     *aPreference = nsIMEUpdatePreference();
     return true;
   }
@@ -1944,7 +1944,7 @@ TabParent::RecvNotifyIMETextChange(const ContentCache& aContentCache,
                                    const bool& aCausedByComposition)
 {
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget)
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default)
     return true;
 
 #ifdef DEBUG
@@ -1972,7 +1972,7 @@ TabParent::RecvNotifyIMESelectedCompositionRect(
              const ContentCache& aContentCache)
 {
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget) {
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default) {
     return true;
   }
 
@@ -1988,7 +1988,7 @@ TabParent::RecvNotifyIMESelection(const ContentCache& aContentCache,
                                   const bool& aCausedByComposition)
 {
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget)
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default)
     return true;
 
   IMENotification notification(NOTIFY_IME_OF_SELECTION_CHANGE);
@@ -2011,7 +2011,7 @@ bool
 TabParent::RecvUpdateContentCache(const ContentCache& aContentCache)
 {
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget) {
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default) {
     return true;
   }
 
@@ -2026,7 +2026,7 @@ TabParent::RecvNotifyIMEMouseButtonEvent(
 {
 
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget) {
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default) {
     *aConsumedByIME = false;
     return true;
   }
@@ -2039,7 +2039,7 @@ bool
 TabParent::RecvNotifyIMEPositionChange(const ContentCache& aContentCache)
 {
   nsCOMPtr<nsIWidget> widget = GetWidget();
-  if (!widget) {
+  if (!widget || XRE_GetProcessType() != GeckoProcessType_Default) {
     return true;
   }
 
